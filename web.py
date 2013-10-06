@@ -43,6 +43,65 @@ def show_event(permalink="notfound"):
 
     return bottle.template("entry_event_template", dict(event=event, username=username, errors="", comment=comment))
 
+@bottle.get("/event_not_found")
+def event_not_found():
+    return "Sorry, event not found"
+
+
+# Displays the form allowing a user to add a new post. Only works for logged in users
+@bottle.get('/newevent')
+def get_newevent():
+
+    cookie = bottle.request.get_cookie("session")
+    username = sessions.get_username(cookie)  # see if user is logged in
+    if username is None:
+        bottle.redirect("/login")
+
+    return bottle.template("newevent_template", dict(title="", description= "", errors="", tags="", username=username))
+
+#
+# Post handler for setting up a new post.
+# Only works for logged in user.
+@bottle.post('/newevent')
+def post_newevent():
+    title = bottle.request.forms.get("title")
+    description = bottle.request.forms.get("description")
+    start_date = bottle.request.forms.get("start_date")
+    end_date = bottle.request.forms.get("end_date")
+    personalized_url = bottle.request.forms.get("personalized_url")
+    venue_id = bottle.request.forms.get("venue_id")
+    organizer_id = bottle.request.forms.get("organizer_id")
+    capacity = bottle.request.forms.get("capacity")
+    confirmation_email = bottle.request.forms.get("confirmation_email")
+    tags = bottle.request.forms.get("tags")
+
+    cookie = bottle.request.get_cookie("session")
+    username = sessions.get_username(cookie)  # see if user is logged in
+    if username is None:
+        bottle.redirect("/login")
+
+    if title == "" or post == "":
+        errors = "Post must contain a title and description entry"
+        return bottle.template("newevent_template", dict(title=cgi.escape(title, quote=True), username=username,
+                                                        description=cgi.escape(description, quote=True), tags=tags, errors=errors))
+
+    # extract tags
+    tags = cgi.escape(tags)
+    tags_array = extract_tags(tags)
+
+    # looks like a good entry, insert it escaped
+    escaped_description = cgi.escape(description, quote=True)
+
+    # substitute some <p> for the paragraph breaks
+    newline = re.compile('\r?\n')
+    formatted_description = newline.sub("<p>", escaped_description)
+
+    permalink = events.insert_entry(title, description, start_date, end_date, personalized_url, venue_id, organizer_id, capacity, confirmation_email, tags_array)
+
+    # now bottle.redirect to the blog permalink
+    bottle.redirect("/post/" + permalink)
+
+
 
 # The main page of the blog, filtered by tag
 @bottle.route('/tag/<tag>')
