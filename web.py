@@ -99,10 +99,10 @@ def post_newevent():
     newline = re.compile('\r?\n')
     formatted_description = newline.sub("<p>", escaped_description)
 
-    permalink = events.insert_entry(title, description, start_date, end_date, personalized_url, venue_id, organizer_id, capacity, confirmation_email, tags_array)
+    permalink = events.insert_entry(title, formatted_description, start_date, end_date, personalized_url, venue_id, organizer_id, capacity, confirmation_email, tags_array)
 
-    # now bottle.redirect to the blog permalink
-    bottle.redirect("/post/" + permalink)
+    # now bottle.redirect to the event permalink
+    bottle.redirect("/event/" + permalink)
 
 
 
