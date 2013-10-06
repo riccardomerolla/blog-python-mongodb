@@ -13,8 +13,8 @@ class EventsDAO:
         self.events = database.events
 
     # inserts the event entry and returns a permalink for the entry
-    def insert_entry(self, title, description, start_date, end_date, timezone, privacy, personalized_url, venue_id, organizer_id, capacity, confirmation_email, tags_array):
-        print "inserting events entry", title, organizer_id
+    def insert_event(self, title, description, start_date, end_date, personalized_url, venue_id, organizer_id, capacity, confirmation_email, tags_array):
+        print "inserting event entry", title, organizer_id
 
         # fix up the permalink to not include whitespace
 
@@ -27,10 +27,10 @@ class EventsDAO:
         event = {"title": title,
                 "permalink": permalink,
                 "description": description,
-                "start_date": start_date,
-                "end_date": end_date,
-                "timezone": timezone,
-                "privacy": privacy,
+                "start_date": datetime.datetime.strptime(start_date, "%Y-%m-%d %H:%M:%S.%f"),
+                "end_date": datetime.datetime.strptime(end_date, "%Y-%m-%d %H:%M:%S.%f"),
+                "timezone": "",
+                "privacy": 1,
                 "personalized_url": personalized_url,
                 "venue_id": venue_id,
                 "organizer_id": organizer_id,
@@ -73,8 +73,10 @@ class EventsDAO:
         l = []
 
         for event in cursor:
-            event['start_date'] = event['start_date'].strftime("%A, %B %d %Y at %I:%M%p")
-            event['end_date'] = event['end_date'].strftime("%A, %B %d %Y at %I:%M%p")
+            if event['start_date'] is not None:
+                event['start_date'] = event['start_date'].strftime("%A, %B %d %Y at %I:%M%p")
+            if event['end_date'] is not None:
+                event['end_date'] = event['end_date'].strftime("%A, %B %d %Y at %I:%M%p")
             if 'tags' not in event:
                 event['tags'] = [] # fill it in if its not there already
             if 'comments' not in event:
@@ -91,8 +93,10 @@ class EventsDAO:
 
         if event is not None:
             # fix up date
-            event['start_date'] = event['start_date'].strftime("%A, %B %d %Y at %I:%M%p")
-            event['end_date'] = event['end_date'].strftime("%A, %B %d %Y at %I:%M%p")
+            if event['start_date'] is not None:
+                event['start_date'] = event['start_date'].strftime("%A, %B %d %Y at %I:%M%p")
+            if event['end_date'] is not None:
+                event['end_date'] = event['end_date'].strftime("%A, %B %d %Y at %I:%M%p")
 
         return event
 

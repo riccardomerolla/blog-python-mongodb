@@ -14,9 +14,9 @@ Welcome {{username}}        <a href="/logout">Logout</a> | <a href="/">Eventsito
 <h2>Description<h2>
 <textarea name="description" cols="120" rows="20">{{description}}</textarea><br>
 <h2>Start date</h2>
-<input type="date" name="start_date" value="{{start_date}}"><br>
+<input type="datetime" name="start_date" value="{{start_date}}"><br>
 <h2>End date</h2>
-<input type="date" name="end_date" value="{{end_date}}"><br>
+<input type="datetime" name="end_date" value="{{end_date}}"><br>
 <h2>Personalize url</h2>
 <input type="text" name="personalized_url" size="120" value="{{personalized_url}}"><br>
 <h2>Confirmation email</h2>

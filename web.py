@@ -7,6 +7,7 @@ import bottle
 import cgi
 import re
 import os
+import datetime
 
 # This route is the main page of the blog
 @bottle.route('/')
@@ -57,7 +58,7 @@ def get_newevent():
     if username is None:
         bottle.redirect("/login")
 
-    return bottle.template("newevent_template", dict(title="", description="", start_date="", end_date="", personalized_url="", venue_id="",
+    return bottle.template("newevent_template", dict(title="", description="", start_date=datetime.datetime.utcnow(), end_date=datetime.datetime.utcnow(), personalized_url="", venue_id="",
      organizer_id="", capacity="", confirmation_email="", errors="", tags="", username=username))
 
 #
@@ -84,7 +85,7 @@ def post_newevent():
     if title == "" or description == "":
         errors = "Post must contain a title and description entry"
         return bottle.template("newevent_template", dict(title=cgi.escape(title, quote=True), username=username,
-                                                        description=cgi.escape(description, quote=True), start_date="", end_date="", 
+                                                        description=cgi.escape(description, quote=True), start_date=datetime.datetime.utcnow(), end_date=datetime.datetime.utcnow(), 
                                                         personalized_url="", venue_id="", organizer_id="", capacity="", confirmation_email="", 
                                                         tags=tags, errors=errors))
 
@@ -99,7 +100,7 @@ def post_newevent():
     newline = re.compile('\r?\n')
     formatted_description = newline.sub("<p>", escaped_description)
 
-    permalink = events.insert_entry(title, formatted_description, start_date, end_date, personalized_url, venue_id, organizer_id, capacity, confirmation_email, tags_array)
+    permalink = events.insert_event(title, formatted_description, start_date, end_date, personalized_url, venue_id, organizer_id, capacity, confirmation_email, tags_array)
 
     # now bottle.redirect to the event permalink
     bottle.redirect("/event/" + permalink)
