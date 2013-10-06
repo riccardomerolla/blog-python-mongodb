@@ -69,12 +69,12 @@ class EventsDAO:
     # returns an array of num_events events, reverse ordered
     def get_events(self, num_posts):
 
-        cursor = self.posts.find().sort('creation_date', direction=-1).limit(num_posts)
+        cursor = self.events.find().sort('creation_date', direction=-1).limit(num_posts)
         l = []
 
         for event in cursor:
             event['start_date'] = event['start_date'].strftime("%A, %B %d %Y at %I:%M%p")
-            event['end_date'] = event['end_date'].strftime("%A, %B %d %Y at %I:%M%p"
+            event['end_date'] = event['end_date'].strftime("%A, %B %d %Y at %I:%M%p")
             if 'tags' not in event:
                 event['tags'] = [] # fill it in if its not there already
             if 'comments' not in event:
