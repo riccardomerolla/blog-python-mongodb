@@ -1,4 +1,5 @@
 import pymongo
+import eventsDAO
 import blogPostDAO
 import sessionDAO
 import userDAO
@@ -16,9 +17,32 @@ def blog_index():
     username = sessions.get_username(cookie)
 
     # even if there is no logged in user, we can show the blog
-    l = posts.get_posts(10)
+    #l = posts.get_posts(10)
+    l = events.get_events(10)
 
-    return bottle.template('blog_template', dict(myposts=l, username=username))
+    #return bottle.template('blog_template', dict(myposts=l, username=username))
+    return bottle.template('event_template', dict(myevents=l, username=username))
+
+# Displays a particular event
+@bottle.get("/event/<permalink>")
+def show_event(permalink="notfound"):
+
+    cookie = bottle.request.get_cookie("session")
+
+    username = sessions.get_username(cookie)
+    permalink = cgi.escape(permalink)
+
+    print "about to query on permalink = ", permalink
+    event = events.get_event_by_permalink(permalink)
+
+    if event is None:
+        bottle.redirect("/event_not_found")
+
+    # init comment form fields for additional comment
+    comment = {'name': "", 'body': "", 'email': ""}
+
+    return bottle.template("entry_event_template", dict(event=event, username=username, errors="", comment=comment))
+
 
 # The main page of the blog, filtered by tag
 @bottle.route('/tag/<tag>')
@@ -303,6 +327,7 @@ connection_string = "mongodb://heroku:heroku@paulo.mongohq.com:10000/app18514552
 connection = pymongo.MongoClient(connection_string)
 database = connection.app18514552
 
+events = eventsDAO.EventsDAO(database)
 posts = blogPostDAO.BlogPostDAO(database)
 users = userDAO.UserDAO(database)
 sessions = sessionDAO.SessionDAO(database)
