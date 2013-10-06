@@ -6,30 +6,30 @@
 <body>
 
 %if (username != None):
-Welcome {{username}}        <a href="/logout">Logout</a> | <a href="/newpost">New Post</a><p>
+Welcome {{username}}        <a href="/logout">Logout</a> | <a href="/newevent">New Event</a><p>
 %end
 
-<h1>My Blog</h1>
+<h1>Events</h1>
 
-%for post in myposts:
-<h2><a href="/post/{{post['permalink']}}">{{post['title']}}</a></h2>
-Posted {{post['post_date']}} <i>By {{post['author']}}</i><br>
+%for event in myevents:
+<h2><a href="/event/{{event['permalink']}}">{{event['title']}}</a></h2>
+Event date: {{event['start_date']}} to {{event['end_date']}}<br>
 Comments: 
-%if ('comments' in post):
-%numComments = len(post['comments'])
+%if ('comments' in event):
+%numComments = len(event['comments'])
 %else:
 %numComments = 0
 %end
-<a href="/post/{{post['permalink']}}">{{numComments}}</a>
+<a href="/event/{{event['permalink']}}">{{numComments}}</a>
 <hr>
-{{!post['body']}}
+{{!event['description']}}
 <p>
 <p>
 <em>Filed Under</em>: 
-%if ('tags' in post):
-%for tag in post['tags'][0:1]:
+%if ('tags' in event):
+%for tag in event['tags'][0:1]:
 <a href="/tag/{{tag}}">{{tag}}</a>
-%for tag in post['tags'][1:]:
+%for tag in event['tags'][1:]:
 , <a href="/tag/{{tag}}">{{tag}}</a>
 %end
 %end
