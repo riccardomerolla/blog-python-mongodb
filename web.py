@@ -57,7 +57,8 @@ def get_newevent():
     if username is None:
         bottle.redirect("/login")
 
-    return bottle.template("newevent_template", dict(title="", description= "", errors="", tags="", username=username))
+    return bottle.template("newevent_template", dict(title="", description="", start_date="", end_date="", personalized_url="", venue_id="",
+     organizer_id="", capacity="", confirmation_email="", errors="", tags="", username=username))
 
 #
 # Post handler for setting up a new post.
@@ -83,7 +84,9 @@ def post_newevent():
     if title == "" or post == "":
         errors = "Post must contain a title and description entry"
         return bottle.template("newevent_template", dict(title=cgi.escape(title, quote=True), username=username,
-                                                        description=cgi.escape(description, quote=True), tags=tags, errors=errors))
+                                                        description=cgi.escape(description, quote=True), start_date="", end_date="", 
+                                                        personalized_url="", venue_id="", organizer_id="", capacity="", confirmation_email="", 
+                                                        tags=tags, errors=errors))
 
     # extract tags
     tags = cgi.escape(tags)
