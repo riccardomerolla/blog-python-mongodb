@@ -298,9 +298,9 @@ def validate_signup(username, password, verify, email, errors):
             return False
     return True
 
-connection_string = "mongodb://localhost"
+connection_string = "mongodb://heroku:heroku@paulo.mongohq.com:10000/app18514552"
 connection = pymongo.MongoClient(connection_string)
-database = connection.blog
+database = connection.app18514552
 
 posts = blogPostDAO.BlogPostDAO(database)
 users = userDAO.UserDAO(database)
