@@ -5,6 +5,7 @@ import userDAO
 import bottle
 import cgi
 import re
+import os
 
 # This route is the main page of the blog
 @bottle.route('/')
@@ -308,5 +309,5 @@ sessions = sessionDAO.SessionDAO(database)
 
 
 bottle.debug(True)
-bottle.run(host='localhost', port=8082)         # Start the webserver running and wait for requests
+bottle.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
 
