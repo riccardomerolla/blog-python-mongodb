@@ -81,7 +81,7 @@ def post_newevent():
     if username is None:
         bottle.redirect("/login")
 
-    if title == "" or post == "":
+    if title == "" or description == "":
         errors = "Post must contain a title and description entry"
         return bottle.template("newevent_template", dict(title=cgi.escape(title, quote=True), username=username,
                                                         description=cgi.escape(description, quote=True), start_date="", end_date="", 
